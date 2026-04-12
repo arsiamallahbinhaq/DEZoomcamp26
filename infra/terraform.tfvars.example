@@ -1,0 +1,8 @@
+project_id         = "dezoomcamp2026-493003"
+region             = "us-central1"
+raw_bucket_name    = "dezoomcamp2026-493003-crude-oil-raw"
+service_account_id = "bruin-crude-oil-sa"
+
+raw_dataset_id     = "crude_oil_raw"
+staging_dataset_id = "crude_oil_staging"
+mart_dataset_id    = "crude_oil_mart"
