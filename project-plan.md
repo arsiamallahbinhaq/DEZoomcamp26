@@ -167,6 +167,33 @@ Field penting yang perlu dipertahankan:
 - `units`
 - deskripsi series atau product jika ada
 
+Hasil eksplorasi yang sudah ditemukan:
+
+- endpoint yang dipakai: `https://api.eia.gov/v2/petroleum/crd/crpdn/data/`
+- frequency: `monthly`
+- facets utama:
+  - `duoarea`
+  - `product`
+  - `process`
+  - `series`
+- field response yang berhasil diverifikasi:
+  - `period`
+  - `duoarea`
+  - `area-name`
+  - `product`
+  - `product-name`
+  - `process`
+  - `process-name`
+  - `series`
+  - `series-description`
+  - `value`
+  - `units`
+
+Catatan desain:
+
+- raw layer akan menyimpan field sumber yang sudah dinormalisasi ke snake_case
+- staging layer nanti akan memfilter record agar fokus ke produksi crude oil bulanan yang relevan untuk dashboard
+
 ### Step 4 — Ingestion Python ke GCS
 
 Target:
@@ -175,11 +202,40 @@ Target:
 - simpan ke parquet
 - upload ke GCS
 
+Progress yang sudah selesai:
+
+- `requirements.txt` sudah dibuat
+- struktur folder `assets/` sudah dibuat
+- script `assets/ingestion/eia_fetch.py` sudah dibuat
+- script berhasil:
+  - fetch sample data dari EIA
+  - menulis parquet lokal
+  - upload sample file ke GCS bucket raw
+
+Path sample upload yang sudah berhasil:
+
+- `gs://dezoomcamp2026-493003-crude-oil-raw/raw/crude_oil/load_date=2026-04-13/data.parquet`
+
 ### Step 5 — Raw layer di BigQuery
 
 Target:
 
 - memuat data mentah ke dataset `crude_oil_raw`
+
+Progress yang sudah selesai:
+
+- script `assets/raw/load_crude_oil_raw.py` sudah dibuat
+- sample parquet dari GCS berhasil dimuat ke BigQuery raw
+- tabel raw yang berhasil dibuat:
+  `dezoomcamp2026-493003.crude_oil_raw.crude_oil_production_raw`
+- jumlah sample row yang berhasil diverifikasi: `10`
+
+Catatan desain:
+
+- raw load saat ini membaca wildcard path:
+  `gs://dezoomcamp2026-493003-crude-oil-raw/raw/crude_oil/load_date=*/data.parquet`
+- write disposition default saat ini adalah `WRITE_TRUNCATE`
+- pendekatan ini cocok untuk fase pengembangan awal karena tabel raw selalu sinkron dengan file parquet yang ada di GCS
 
 ### Step 6 — Staging layer
 
@@ -238,6 +294,17 @@ Status terkini:
 - pertanyaan dashboard sudah dikunci
 - README sudah disejajarkan dengan scope baru
 - Step 1 sudah selesai
+- Step 3 sudah selesai untuk eksplorasi schema awal
+- Step 4 sudah dimulai dan ingestion sample berhasil
+- Step 5 minimum sudah berhasil dengan raw load sample ke BigQuery
+
+File implementasi yang sudah ada:
+
+- `requirements.txt`
+- `assets/ingestion/eia_fetch.py`
+- `assets/raw/`
+- `assets/staging/`
+- `assets/mart/`
 - Terraform berhasil membuat resource utama di GCP
 - output Terraform sudah terverifikasi
 - project saat ini siap masuk ke tahap eksplorasi schema EIA crude oil dan pembuatan ingestion
@@ -260,11 +327,11 @@ Catatan sesi ini:
 
 Hal yang perlu dilanjutkan nanti malam:
 
-1. mulai `Step 3` dengan eksplorasi schema endpoint EIA crude oil
-2. tentukan field raw yang akan disimpan
-3. buat skeleton folder `assets/ingestion`, `assets/raw`, `assets/staging`, dan `assets/mart`
-4. buat `requirements.txt`
-5. mulai implementasi `eia_fetch.py`
+1. lanjut ke `Step 6` untuk membuat staging model
+2. filter data agar fokus ke state-level crude oil production yang relevan untuk dashboard
+3. buat SQL `mart` untuk metrik dashboard
+4. tambahkan konfigurasi Bruin agar asset bisa dijalankan berurutan
+5. siapkan query sanity check untuk validasi hasil
 
 Catatan keamanan:
 
@@ -276,8 +343,8 @@ Catatan keamanan:
 
 Setelah Step 1 ini, urutan kerja kita adalah:
 
-1. eksplorasi schema data crude oil dari EIA
-2. definisikan schema raw dan schema staging
-3. buat script ingestion Python
-4. upload parquet ke GCS
-5. lanjut ke raw, staging, dan mart layer di BigQuery
+1. definisikan staging model yang fokus ke state-level crude oil production
+2. buat mart untuk kebutuhan dashboard
+3. bungkus pipeline ke dalam asset Bruin
+4. tambahkan sanity checks
+5. lanjut ke Looker Studio
