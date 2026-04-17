@@ -1,7 +1,7 @@
-project_id         = "dezoomcamp2026-493003"
-region             = "us-central1"
-raw_bucket_name    = "dezoomcamp2026-493003-crude-oil-raw"
-service_account_id = "bruin-crude-oil-sa"
+project_id         = "your-gcp-project-id"
+region             = "your-gcp-region"
+raw_bucket_name    = "your-unique-raw-bucket-name"
+service_account_id = "your-pipeline-service-account-id"
 
 raw_dataset_id     = "crude_oil_raw"
 staging_dataset_id = "crude_oil_staging"

@@ -1,3 +1,18 @@
+"""@bruin
+name: ingestion.eia_crude_oil_to_gcs
+description: Fetch monthly crude oil production data from the EIA API and store the raw extract as parquet in GCS.
+image: python:3.12
+secrets:
+  - key: EIA_API_KEY
+  - key: GCS_BUCKET_NAME
+  - key: GOOGLE_APPLICATION_CREDENTIALS
+tags:
+  - ingestion
+  - eia
+  - gcs
+  - crude-oil
+@bruin"""
+
 from __future__ import annotations
 
 import argparse

@@ -1,0 +1,14 @@
+name: crude-oil-ai-analyst
+
+default_connections:
+  google_cloud_platform: gcp
+
+tags:
+  - bruin
+  - ai-analyst
+  - bigquery
+  - crude-oil
+
+domains:
+  - energy
+  - analytics

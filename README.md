@@ -99,8 +99,57 @@ DEZoomcamp26/
 Tahap sekarang:
 
 - scope project sudah dikunci
-- dokumentasi sedang disejajarkan
-- implementasi dimulai dari Step 1: setup GCP dan fondasi Terraform
+- ingestion, raw, staging, dan mart layer sudah berhasil dibuat
+- pipeline sudah dibungkus sebagai asset Bruin
+- `bruin validate .` sudah berhasil
+
+### Menjalankan dengan Bruin
+
+1. Copy konfigurasi Bruin:
+
+```bash
+cp .bruin.yml.example .bruin.yml
+```
+
+2. Export environment variables:
+
+```bash
+set -a
+source .env
+set +a
+export PATH=$HOME/.local/bin:$PATH
+export BRUIN_HOME=/tmp/.bruin
+```
+
+3. Validasi pipeline:
+
+```bash
+bruin validate .
+```
+
+4. Jalankan pipeline:
+
+```bash
+bruin run .
+```
+
+Flow Bruin di project ini:
+
+- `ingestion.eia_crude_oil_to_gcs`
+- `raw.load_crude_oil_raw`
+- `staging.stg_crude_oil_production`
+- `mart.fct_crude_oil_production`
+
+Bruin membaca `depends` antar asset dan mengeksekusinya dalam urutan yang benar.
+
+### Bruin Competition Notes
+
+Untuk mendukung kriteria kompetisi Bruin:
+
+- ingestion dijalankan lewat asset Python Bruin
+- transformation dijalankan lewat asset SQL Bruin di BigQuery
+- orchestration dijalankan lewat `bruin run`
+- panduan `AI data analyst` disiapkan di [docs/bruin-ai-analyst.md](/workspaces/DEZoomcamp26/docs/bruin-ai-analyst.md:1)
 
 ### Kriteria Nilai yang Ditargetkan
 
@@ -204,8 +253,57 @@ DEZoomcamp26/
 Current phase:
 
 - the project scope has been locked
-- the documentation is being aligned
-- implementation starts with Step 1: GCP setup and Terraform foundation
+- ingestion, raw, staging, and mart layers have been built
+- the pipeline has been wrapped as Bruin assets
+- `bruin validate .` passes successfully
+
+### Running with Bruin
+
+1. Copy the Bruin config:
+
+```bash
+cp .bruin.yml.example .bruin.yml
+```
+
+2. Export environment variables:
+
+```bash
+set -a
+source .env
+set +a
+export PATH=$HOME/.local/bin:$PATH
+export BRUIN_HOME=/tmp/.bruin
+```
+
+3. Validate the pipeline:
+
+```bash
+bruin validate .
+```
+
+4. Run the pipeline:
+
+```bash
+bruin run .
+```
+
+Bruin flow in this project:
+
+- `ingestion.eia_crude_oil_to_gcs`
+- `raw.load_crude_oil_raw`
+- `staging.stg_crude_oil_production`
+- `mart.fct_crude_oil_production`
+
+Bruin reads the `depends` graph and executes the assets in dependency order.
+
+### Bruin Competition Notes
+
+To support the Bruin competition requirements:
+
+- ingestion is executed as a Bruin Python asset
+- transformations are executed as Bruin SQL assets on BigQuery
+- orchestration runs through `bruin run`
+- an `AI data analyst` guide is included in [docs/bruin-ai-analyst.md](/workspaces/DEZoomcamp26/docs/bruin-ai-analyst.md:1)
 
 ### Evaluation Goals
 

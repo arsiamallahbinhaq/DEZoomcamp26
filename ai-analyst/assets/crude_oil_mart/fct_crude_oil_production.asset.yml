@@ -1,0 +1,83 @@
+name: crude_oil_mart.fct_crude_oil_production
+type: bq.source
+description: |-
+  Imported table: crude_oil_mart.fct_crude_oil_production
+  Extracted at: 2026-04-17T23:44:55Z
+  Created at: 2026-04-17T23:21:19Z
+  Last modified: 2026-04-17T23:21:19Z
+  Row count: 2
+  Size: 181 bytes
+
+  Monthly fact table of U.S. crude oil production at the state and month grain. Each row represents one state_code for one calendar month in the `period` partition and is intended to power the final dashboard and ad hoc trend analysis described in the project README.
+
+  The table is produced by the `crude-oil-ai-analyst` pipeline from the mart model in `assets/mart/fct_crude_oil_production.sql`, which aggregates `crude_oil_staging.stg_crude_oil_production`. Upstream data originates from the public EIA crude oil production API, is fetched monthly by the Python ingestion asset, standardized in staging, and then rolled up here into state-level totals plus national context metrics.
+
+  Transformations applied in this mart are lightweight but analytically important: `total_production` is summed by state and month from the staging table, `national_total_production` is computed with a windowed sum across all states for the same period, and `share_of_total_pct`, `mom_change_pct`, and `yoy_change_pct` are derived with `SAFE_DIVIDE` and lag windows. Because growth metrics depend on prior observations, the first available month for a state and the first 12 months of a state's history can legitimately have null growth percentages.
+
+  Operationally, the physical mart table is partitioned by `period` and clustered by `state_code`, so the most efficient access pattern is filtering by month range and optionally by state. Refresh cadence is expected to follow the batch pipeline run after the monthly EIA extract lands. The dataset is mutable at the table level because the model uses `CREATE OR REPLACE TABLE`, but the business grain is append-by-month with occasional historical restatement if upstream source values are reloaded.
+
+  Naming is mostly straightforward, with one nuance: `unit` is singular in the mart while the upstream staging table uses `units`. In practice this mart should contain only `MBBL`, inherited from the staging filter. `state_code` is a two-letter U.S. state abbreviation extracted from EIA `area_name`, not a surrogate key. No obvious direct PII appears in this table; it is public energy production data enriched for analytics.
+tags:
+  - energy
+  - analytics
+  - mart
+  - fact_table
+  - monthly
+  - batch
+  - internal
+
+columns:
+  - name: mom_change_pct
+    type: NUMERIC
+    description: Month-over-month percentage change in `total_production` for the same `state_code`, calculated as `(current month - previous month) / previous month * 100`. This is a derived percentage metric and may be null when a prior month is unavailable or when the prior month value is zero because the mart uses `SAFE_DIVIDE`.
+  - name: national_total_production
+    type: NUMERIC
+    description: Sum of `total_production` across all states for the same `period`. This is a derived monthly national benchmark used as the denominator for state share calculations. Unit matches `unit` and is expected to be thousand barrels.
+    checks:
+      - name: not_null
+  - name: period
+    type: DATE
+    description: First-day date representing the production month for the record. This is the table partition key, a business date dimension, and the canonical field to use for monthly time-series filtering.
+    checks:
+      - name: not_null
+  - name: production_month
+    type: INTEGER
+    description: Numeric calendar month extracted from `period` in the range 1-12. This is a derived time dimension that simplifies reporting and grouping.
+    checks:
+      - name: not_null
+  - name: production_year
+    type: INTEGER
+    description: Four-digit calendar year extracted from `period`. This is a derived time dimension commonly used for year-over-year slicing.
+    checks:
+      - name: not_null
+  - name: share_of_total_pct
+    type: NUMERIC
+    description: State share of national crude oil production for the same `period`, calculated as `total_production / national_total_production * 100`. This is a derived percentage metric used for concentration analysis and dashboard ranking.
+  - name: state_code
+    type: STRING
+    description: Two-letter U.S. state abbreviation parsed from the EIA `area_name` field in staging, for example `TX` or `NM`. This is a low-cardinality geographic identifier rather than a synthetic key.
+    checks:
+      - name: not_null
+      - name: pattern
+        value: ^[A-Z]{2}$
+  - name: state_name
+    type: STRING
+    description: Human-readable U.S. state name associated with `state_code`, derived from the EIA series description during staging. This is the primary geographic dimension used in charts and analyst-facing outputs.
+    checks:
+      - name: not_null
+  - name: total_production
+    type: NUMERIC
+    description: Monthly crude oil production for the given state and `period`, aggregated from staging records. This is the core fact metric in the table. Based on upstream filters, values should represent non-negative production in thousand barrels.
+    checks:
+      - name: not_null
+  - name: unit
+    type: STRING
+    description: Unit of measure for `total_production` and `national_total_production`. Although named `unit` here, it comes from the upstream `units` field and is expected to be the constant value `MBBL`, meaning thousand barrels.
+    checks:
+      - name: not_null
+      - name: accepted_values
+        value:
+          - MBBL
+  - name: yoy_change_pct
+    type: NUMERIC
+    description: Year-over-year percentage change in `total_production` for the same `state_code`, calculated against the value 12 months earlier. This is a derived percentage metric and may be null when a comparable prior-year month is unavailable or zero.

@@ -1,3 +1,17 @@
+/* @bruin
+
+name: staging.stg_crude_oil_production
+type: bq.sql
+depends:
+  - raw.load_crude_oil_raw
+description: Clean the raw crude oil dataset into state-level monthly production records ready for mart aggregation.
+tags:
+  - staging
+  - bigquery
+  - crude-oil
+
+@bruin */
+
 CREATE OR REPLACE TABLE `crude_oil_staging.stg_crude_oil_production`
 PARTITION BY period
 CLUSTER BY state_code AS

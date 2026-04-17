@@ -1,6 +1,13 @@
 .env
+.bruin.yml
 .terraform/
 terraform.tfstate
 terraform.tfstate.*
 infra/terraform.tfvars
 .secrets/
+
+logs/runs
+logs/*.log
+__pycache__/
+*.py[cod]
+logs/queries

@@ -246,6 +246,21 @@ Target:
 - filter invalid rows
 - standarisasi state
 
+Progress yang sudah selesai:
+
+- file `assets/staging/stg_crude_oil_production.sql` sudah dibuat
+- tabel staging berhasil dimaterialisasi di BigQuery:
+  `dezoomcamp2026-493003.crude_oil_staging.stg_crude_oil_production`
+- transformasi utama yang sudah diterapkan:
+  - konversi `period` dari epoch ke `DATE`
+  - filter `product = EPC0`
+  - filter `process = FPF`
+  - filter unit bulanan `MBBL`
+  - filter record state-level dengan pola `USA-XX`
+  - derivasi `state_code`
+  - derivasi `state_name`
+  - deduplication sederhana berdasarkan period, state, series, dan unit
+
 ### Step 7 — Mart layer
 
 Target:
@@ -253,11 +268,47 @@ Target:
 - membuat `fct_crude_oil_production`
 - menghitung metrik dashboard
 
+Progress yang sudah selesai:
+
+- file `assets/mart/fct_crude_oil_production.sql` sudah dibuat
+- tabel mart berhasil dimaterialisasi di BigQuery:
+  `dezoomcamp2026-493003.crude_oil_mart.fct_crude_oil_production`
+- metrik utama yang sudah tersedia:
+  - `total_production`
+  - `national_total_production`
+  - `share_of_total_pct`
+  - `mom_change_pct`
+  - `yoy_change_pct`
+- grain fact table saat ini adalah `period + state`
+
 ### Step 8 — Orchestration dengan Bruin
 
 Target:
 
 - seluruh dependency antar asset berjalan benar
+
+Progress yang sudah selesai:
+
+- file `pipeline.yml` sudah dibuat
+- file `.bruin.yml.example` sudah dibuat
+- file `.bruin.yml` lokal sudah dibuat untuk eksekusi development
+- metadata Bruin sudah ditambahkan ke:
+  - `assets/ingestion/eia_fetch.py`
+  - `assets/raw/load_crude_oil_raw.py`
+  - `assets/staging/stg_crude_oil_production.sql`
+  - `assets/mart/fct_crude_oil_production.sql`
+- `bruin validate .` berhasil
+- urutan asset sekarang adalah:
+  - `ingestion.eia_crude_oil_to_gcs`
+  - `raw.load_crude_oil_raw`
+  - `staging.stg_crude_oil_production`
+  - `mart.fct_crude_oil_production`
+
+Catatan implementasi:
+
+- Bruin CLI diinstall resmi dari `https://getbruin.com/install/cli`
+- di Codespaces, `BRUIN_HOME=/tmp/.bruin` dipakai agar Bruin tidak menulis ke home directory yang read-only
+- koneksi BigQuery Bruin memakai path relatif `.secrets/gcp-sa-key.json`
 
 ### Step 9 — Dashboard di Looker Studio
 
@@ -273,6 +324,30 @@ Target:
 - README sinkron dengan implementasi
 - screenshot tersedia
 - repo mudah dipahami reviewer
+
+### Step 11 — Bruin AI Analyst
+
+Target:
+
+- membuat context pipeline terpisah untuk analisis
+- import schema warehouse menjadi asset Bruin
+- menyiapkan langkah `bruin ai enhance`
+- menunjukkan analisis menggunakan `bruin query`
+
+Progress yang sudah selesai:
+
+- folder `ai-analyst/` sudah dibuat
+- file `ai-analyst/pipeline.yml` sudah dibuat
+- schema berikut sudah berhasil diimport:
+  - `crude_oil_mart`
+  - `crude_oil_staging`
+- `bruin validate ai-analyst` berhasil
+- `bruin query` terhadap tabel mart berhasil
+
+Catatan:
+
+- provider AI CLI untuk `bruin ai enhance` belum tersedia di environment ini
+- context files sudah siap, jadi langkah enhancement bisa langsung dilanjutkan saat provider AI sudah tersedia
 
 ## 7. Definition of Done
 
@@ -297,6 +372,10 @@ Status terkini:
 - Step 3 sudah selesai untuk eksplorasi schema awal
 - Step 4 sudah dimulai dan ingestion sample berhasil
 - Step 5 minimum sudah berhasil dengan raw load sample ke BigQuery
+- Step 6 sudah berhasil dengan staging table di BigQuery
+- Step 7 minimum sudah berhasil dengan mart fact table di BigQuery
+- Step 8 minimum sudah berhasil dengan validasi pipeline Bruin
+- Step 11 minimum sudah berhasil dengan setup `Bruin AI analyst` context dan query
 
 File implementasi yang sudah ada:
 
@@ -328,10 +407,10 @@ Catatan sesi ini:
 Hal yang perlu dilanjutkan nanti malam:
 
 1. lanjut ke `Step 6` untuk membuat staging model
-2. filter data agar fokus ke state-level crude oil production yang relevan untuk dashboard
-3. buat SQL `mart` untuk metrik dashboard
-4. tambahkan konfigurasi Bruin agar asset bisa dijalankan berurutan
-5. siapkan query sanity check untuk validasi hasil
+2. siapkan query sanity check untuk validasi hasil
+3. sambungkan mart table ke Looker Studio
+4. rapikan README agar mencerminkan implementasi final
+5. jalankan `bruin ai enhance` setelah provider AI CLI tersedia
 
 Catatan keamanan:
 
@@ -343,8 +422,8 @@ Catatan keamanan:
 
 Setelah Step 1 ini, urutan kerja kita adalah:
 
-1. definisikan staging model yang fokus ke state-level crude oil production
-2. buat mart untuk kebutuhan dashboard
-3. bungkus pipeline ke dalam asset Bruin
-4. tambahkan sanity checks
-5. lanjut ke Looker Studio
+1. tambahkan sanity checks
+2. lanjut ke Looker Studio
+3. jalankan `bruin ai enhance` untuk menambah metadata analyst
+4. rapikan README dan screenshot hasil
+5. siapkan narasi presentasi/interview

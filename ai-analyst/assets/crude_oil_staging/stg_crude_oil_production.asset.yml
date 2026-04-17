@@ -1,0 +1,128 @@
+name: crude_oil_staging.stg_crude_oil_production
+type: bq.source
+description: |-
+  Imported table: crude_oil_staging.stg_crude_oil_production
+  Extracted at: 2026-04-17T23:45:06Z
+  Created at: 2026-04-13T13:49:38Z
+  Last modified: 2026-04-13T13:49:38Z
+  Row count: 2
+  Size: 542 bytes
+
+  This staging table contains state-level monthly crude oil field production records standardized from the U.S. Energy Information Administration (EIA) petroleum production API feed. In the project pipeline, raw parquet extracts are fetched from the EIA API, loaded into `crude_oil_raw.crude_oil_production_raw`, and then transformed into this table for analytics-ready use.
+
+  The transformation keeps only monthly crude oil production records for `product = EPC0`, `process = FPF`, and `units = MBBL`, converts the source period into a proper `DATE`, derives `production_year` and `production_month`, extracts a two-letter `state_code` from the raw `area_name`, and standardizes `state_name` from the series description when possible. Records are deduplicated by the latest `ingested_at` and `load_date` within each `period`, `state_code`, `series`, and `units` combination.
+
+  This table is the main curated staging layer feeding `crude_oil_mart.fct_crude_oil_production`, where state totals, national share, and growth metrics are calculated for dashboarding. Because the source is monthly EIA data, refreshes are expected to be batch-oriented rather than streaming. The underlying BigQuery table is partitioned by `period` and clustered by `state_code`, which fits time-series and state-slice analysis.
+
+  Notable nuances:
+  - `area_name_raw` retains the original EIA geographic label such as `USA-TX`; it is a legacy raw label rather than a presentation-friendly state name.
+  - `duoarea`, `series`, and `series_description` are EIA-specific identifiers that are useful for lineage and troubleshooting but less suitable for business-facing reporting.
+  - `production_value` is already filtered to non-negative values in the SQL transformation, so negative production records should not appear here.
+  - `units` is expected to be consistently `MBBL` in this dataset, meaning production is measured in thousand barrels.
+tags:
+  - energy
+  - crude-oil
+  - staging
+  - bigquery
+  - state-production
+  - time-series
+  - internal
+  - batch
+  - partitioned
+domains:
+  - energy
+  - analytics
+meta:
+  cluster_by: state_code
+  downstream_assets: crude_oil_mart.fct_crude_oil_production
+  layer: staging
+  partition_by: period
+  refresh_cadence: batch, typically aligned to monthly source updates and rerun on pipeline execution
+  source_system: EIA API
+  source_table: crude_oil_raw.crude_oil_production_raw
+  update_pattern: mutable snapshot rebuilt from raw extracts
+
+columns:
+  - name: area_name_raw
+    type: STRING
+    description: Original EIA area label from the raw dataset, typically in the form `USA-XX`. Semantic type is raw dimension. This is preserved for lineage and debugging and is less user-friendly than `state_name`.
+  - name: duoarea
+    type: STRING
+    description: EIA geographic code for the reporting area. Semantic type is source identifier. Expected cardinality is low relative to row count because the same code repeats across monthly observations for each state.
+  - name: ingested_at
+    type: TIMESTAMP
+    description: UTC timestamp showing when the source record batch was ingested by the pipeline. Semantic type is operational timestamp. Derived by the ingestion script and used to retain the latest duplicate during staging.
+    checks:
+      - name: not_null
+  - name: load_date
+    type: DATE
+    description: UTC calendar date of the ingestion run that produced the raw extract. Semantic type is operational date. Derived from the ingestion timestamp and useful for tracing reloads and backfills.
+    checks:
+      - name: not_null
+  - name: period
+    type: DATE
+    description: First day of the production month represented by the record. Semantic type is business date dimension and partition column. Derived from the EIA monthly period field.
+    checks:
+      - name: not_null
+  - name: process
+    type: STRING
+    description: EIA process code for the measurement. In this staged dataset it is filtered to crude oil field production records and should remain stable across rows. Semantic type is source classification code.
+    checks:
+      - name: not_null
+  - name: process_name
+    type: STRING
+    description: Human-readable label for the EIA process code. Semantic type is descriptive dimension derived directly from the source feed.
+  - name: product
+    type: STRING
+    description: EIA product code for the commodity being reported. In this table it represents crude oil production only. Semantic type is source classification code.
+    checks:
+      - name: not_null
+  - name: product_name
+    type: STRING
+    description: Human-readable label for the EIA product code. Semantic type is descriptive dimension carried from the raw source.
+  - name: production_month
+    type: INTEGER
+    description: Numeric month extracted from `period`, in the range 1-12. Semantic type is derived calendar dimension used for reporting and filtering.
+    checks:
+      - name: not_null
+  - name: production_value
+    type: NUMERIC
+    description: Monthly crude oil production volume for the state and period, measured in the unit given by `units`. Semantic type is metric. This value is cast from the raw API payload and filtered to non-negative records in the staging SQL.
+    checks:
+      - name: not_null
+  - name: production_year
+    type: INTEGER
+    description: Four-digit year extracted from `period`. Semantic type is derived calendar dimension with low cardinality relative to the full table.
+    checks:
+      - name: not_null
+  - name: series
+    type: STRING
+    description: EIA series identifier for the production time series. Semantic type is source identifier. Useful for reconciling staged rows with the original EIA series naming scheme.
+  - name: series_description
+    type: STRING
+    description: Full EIA description of the source time series. Semantic type is source-provided descriptive text. This field is also used to derive `state_name` when the pattern matches.
+  - name: source_endpoint
+    type: STRING
+    description: API endpoint URL used to retrieve the raw data. Semantic type is operational lineage field. Derived by the ingestion script and expected to be constant for this asset.
+    checks:
+      - name: not_null
+  - name: source_name
+    type: STRING
+    description: Internal pipeline source label identifying the raw extract as EIA crude oil production data. Semantic type is operational lineage field.
+    checks:
+      - name: not_null
+  - name: state_code
+    type: STRING
+    description: Two-letter U.S. state code extracted from the raw `area_name` field. Semantic type is geographic identifier and clustering dimension. Expected cardinality is roughly one value per producing state.
+    checks:
+      - name: not_null
+  - name: state_name
+    type: STRING
+    description: Human-readable U.S. state name derived primarily from `series_description`, falling back to the raw area label when needed. Semantic type is geographic dimension used in downstream reporting.
+    checks:
+      - name: not_null
+  - name: units
+    type: STRING
+    description: Measurement unit for `production_value`. In this staged dataset it is expected to be `MBBL`, representing thousand barrels. Semantic type is unit dimension and source attribute.
+    checks:
+      - name: not_null

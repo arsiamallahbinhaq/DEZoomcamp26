@@ -1,3 +1,21 @@
+"""@bruin
+name: raw.load_crude_oil_raw
+description: Load raw crude oil parquet files from GCS into the BigQuery raw dataset.
+image: python:3.12
+depends:
+  - ingestion.eia_crude_oil_to_gcs
+secrets:
+  - key: GCP_PROJECT_ID
+  - key: GCS_BUCKET_NAME
+  - key: GCP_REGION
+  - key: GOOGLE_APPLICATION_CREDENTIALS
+tags:
+  - raw
+  - bigquery
+  - gcs
+  - crude-oil
+@bruin"""
+
 from __future__ import annotations
 
 import argparse
