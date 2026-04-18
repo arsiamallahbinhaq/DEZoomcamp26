@@ -16,10 +16,10 @@ You can access the live interactive report here:
 The primary goal of this project is to build a robust, scalable pipeline that tracks crude oil production across different U.S. states using public data from the Energy Information Administration (EIA).
 
 ### Key Business Questions:
-- What is the monthly trend of U.S. crude oil production over time?
-- Which states are the top contributors to the national production?
-- How concentrated is the production within a few key states?
-- When did significant production spikes or drops occur?
+- **Monthly Trends**: How is U.S. crude oil production trending over time? (Line Chart)
+- **Top Producers**: Which states are the leading contributors to national production? (Bar Chart)
+- **Market Concentration**: What is the percentage share of each state relative to the national total?
+- **Growth Analysis**: What are the monthly (MoM) and yearly (YoY) production growth rates?
 
 ## 🏗️ Architecture
 The pipeline follows a modular architecture:
@@ -91,8 +91,10 @@ Proyek ini membangun pipeline data end-to-end untuk menganalisis produksi crude 
 
 ### Dashboard Utama:
 Dashboard kami dirancang untuk menjawab metrik kunci produksi:
-- **Tren Temporal**: Grafik garis yang menunjukkan tren produksi bulanan dari 2024-2025.
-- **Distribusi Kategorikal**: Grafik batang yang menunjukkan kontribusi produksi per negara bagian (State).
+- **Tren Bulanan**: Analisis tren produksi crude oil AS dari waktu ke waktu (Line Chart).
+- **Produsen Utama**: Identifikasi negara bagian dengan kontribusi produksi tertinggi (Bar Chart).
+- **Pangsa Pasar**: Persentase kontribusi setiap negara bagian terhadap total produksi nasional.
+- **Analisis Pertumbuhan**: Performa pertumbuhan produksi secara bulanan (MoM) dan tahunan (YoY).
 
 **Buka Report Looker Studio**
 
