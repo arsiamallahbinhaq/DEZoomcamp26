@@ -1,15 +1,26 @@
 name: crude-oil-analytics
-schedule: "@daily"
+description: "End-to-end pipeline for U.S. Crude Oil Production analysis"
+schedule: "0 0 1 * *" # Berjalan setiap tanggal 1
 start_date: "2026-01-01"
 
 default_connections:
   google_cloud_platform: gcp
+
+notifications:
+  slack:
+    - channel: "#data-pipeline-alerts"
+      on_failure: true
 
 tags:
   - zoomcamp
   - bruin
   - bigquery
   - crude-oil
+
+environments:
+  dev:
+    connections:
+      google_cloud_platform: gcp-dev
 
 domains:
   - energy

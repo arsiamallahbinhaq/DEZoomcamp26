@@ -1,0 +1,32 @@
+
+Pipeline: crude-oil-analytics (.)
+  No issues found
+
+✓ Successfully validated 4 assets across 1 pipeline, all good.
+
+Interval: 2026-04-17T00:00:00Z - 2026-04-17T23:59:59Z
+
+Starting the pipeline execution...
+
+[00:14:27] Running:  ingestion.eia_crude_oil_to_gcs
+[00:15:16] [ingestion.eia_crude_oil_to_gcs] >> {'rows_fetched': 1968, 'local_parquet': '/tmp/eia_crude_oil_oe1jgz28/crude_oil_raw.parquet', 'gcs_path': 'gs://dezoomcamp2026-493003-crude-oil-raw/raw/crude_oil/load_date=2026-04-18/data.parquet', 'min_period': '2024-01-01', 'max_period': '2025-12-01'}
+[00:15:17] Finished: ingestion.eia_crude_oil_to_gcs (49.145s)
+[00:15:17] Running:  raw.load_crude_oil_raw
+[00:15:23] [raw.load_crude_oil_raw] >> {'table_id': 'dezoomcamp2026-493003.crude_oil_raw.crude_oil_production_raw', 'source_uri': 'gs://dezoomcamp2026-493003-crude-oil-raw/raw/crude_oil/load_date=*/data.parquet', 'rows_loaded': 1978, 'write_disposition': 'WRITE_TRUNCATE'}
+[00:15:24] Finished: raw.load_crude_oil_raw (7.111s)
+[00:15:24] Running:  staging.stg_crude_oil_production
+[00:15:27] Finished: staging.stg_crude_oil_production (2.925s)
+[00:15:27] Running:  mart.fct_crude_oil_production
+[00:15:29] Finished: mart.fct_crude_oil_production (2.829s)
+
+==================================================
+
+PASS ingestion.eia_crude_oil_to_gcs 
+PASS raw.load_crude_oil_raw 
+PASS staging.stg_crude_oil_production 
+PASS mart.fct_crude_oil_production 
+
+
+bruin run completed successfully in 1m2.013s
+
+ ✓ Assets executed      4 succeeded

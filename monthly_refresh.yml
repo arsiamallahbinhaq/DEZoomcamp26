@@ -1,0 +1,49 @@
+name: Monthly Data Refresh
+
+on:
+  schedule:
+    - cron: '0 0 1 * *' # Berjalan setiap tanggal 1 pukul 00:00 UTC
+  workflow_dispatch:   # Memungkinkan pemicu manual dari tab Actions
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Bruin CLI
+        run: |
+          curl -L https://getbruin.com/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Setup Bruin Config
+        run: |
+          cp .bruin.yml.example .bruin.yml
+          # Memastikan folder .secrets ada jika bruin.yml merujuk ke sana
+          mkdir -p .secrets
+          echo '${{ secrets.GCP_SA_KEY }}' > .secrets/gcp-sa-key.json
+
+      - name: Run Bruin Pipeline
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          GCS_BUCKET_NAME: ${{ secrets.GCS_BUCKET_NAME }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+        run: |
+          bruin run .

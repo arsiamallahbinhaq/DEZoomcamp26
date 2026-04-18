@@ -1,0 +1,138 @@
+
+Pipeline: crude-oil-analytics (.)
+  No issues found
+
+✓ Successfully validated 4 assets across 1 pipeline, all good.
+
+Interval: 2026-04-16T00:00:00Z - 2026-04-16T23:59:59Z
+
+Starting the pipeline execution...
+
+[23:38:33] Running:  ingestion.eia_crude_oil_to_gcs
+[23:38:33] [ingestion.eia_crude_oil_to_gcs] ===============================
+[23:38:33] [ingestion.eia_crude_oil_to_gcs] Installing uv v0.10.8...
+[23:38:33] [ingestion.eia_crude_oil_to_gcs] This is a one-time operation.
+[23:38:33] [ingestion.eia_crude_oil_to_gcs] 
+[23:38:35] [ingestion.eia_crude_oil_to_gcs] downloading uv 0.10.8 x86_64-unknown-linux-gnu
+[23:38:35] [ingestion.eia_crude_oil_to_gcs] no checksums to verify
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] installing to /home/codespace/.bruin
+[23:38:36] [ingestion.eia_crude_oil_to_gcs]   uv
+[23:38:36] [ingestion.eia_crude_oil_to_gcs]   uvx
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] everything's installed!
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] 
+To add $HOME/.bruin to your PATH, either restart your shell or run:
+
+    source $HOME/.bruin/env (sh, bash, zsh)
+    source $HOME/.bruin/env.fish (fish)
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] 
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] Installed uv v0.10.8, continuing...
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] ===============================
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] 
+[23:38:36] [ingestion.eia_crude_oil_to_gcs] >> WARN `--no-project` was provided, but no project was found
+[23:38:37] [ingestion.eia_crude_oil_to_gcs] >> Downloading cryptography (4.3MiB)
+[23:38:37] [ingestion.eia_crude_oil_to_gcs] >> Downloading grpcio (6.5MiB)
+[23:38:37] [ingestion.eia_crude_oil_to_gcs] >> Downloading numpy (15.9MiB)
+[23:38:37] [ingestion.eia_crude_oil_to_gcs] >> Downloading pyarrow (40.1MiB)
+[23:38:37] [ingestion.eia_crude_oil_to_gcs] >> Downloading pandas (12.1MiB)
+[23:38:38] [ingestion.eia_crude_oil_to_gcs] >>  Downloaded grpcio
+[23:38:38] [ingestion.eia_crude_oil_to_gcs] >>  Downloaded cryptography
+[23:38:39] [ingestion.eia_crude_oil_to_gcs] >>  Downloaded numpy
+[23:38:39] [ingestion.eia_crude_oil_to_gcs] >>  Downloaded pyarrow
+[23:38:39] [ingestion.eia_crude_oil_to_gcs] >>  Downloaded pandas
+[23:38:39] [ingestion.eia_crude_oil_to_gcs] >> Installed 32 packages in 225ms
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> Traceback (most recent call last):
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/connectionpool.py", line 534, in _make_request
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     response = conn.getresponse()
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>                ^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/connection.py", line 571, in getresponse
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     httplib_response = super().getresponse()
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>                        ^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.python/current/lib/python3.12/http/client.py", line 1419, in getresponse
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     response.begin()
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.python/current/lib/python3.12/http/client.py", line 331, in begin
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     version, status, reason = self._read_status()
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>                               ^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.python/current/lib/python3.12/http/client.py", line 292, in _read_status
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.python/current/lib/python3.12/socket.py", line 707, in readinto
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     return self._sock.recv_into(b)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>            ^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.python/current/lib/python3.12/ssl.py", line 1253, in recv_into
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     return self.read(nbytes, buffer)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>            ^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.python/current/lib/python3.12/ssl.py", line 1105, in read
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     return self._sslobj.read(len, buffer)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> TimeoutError: The read operation timed out
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> 
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> The above exception was the direct cause of the following exception:
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> 
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> Traceback (most recent call last):
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/requests/adapters.py", line 667, in send
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     resp = conn.urlopen(
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>            ^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     retries = retries.increment(
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>               ^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/util/retry.py", line 490, in increment
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     raise reraise(type(error), error, _stacktrace)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/util/util.py", line 39, in reraise
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     raise value
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     response = self._make_request(
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>                ^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/connectionpool.py", line 536, in _make_request
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/urllib3/connectionpool.py", line 367, in _raise_timeout
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     raise ReadTimeoutError(
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.eia.gov', port=443): Read timed out. (read timeout=60)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> 
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> During handling of the above exception, another exception occurred:
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> 
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> Traceback (most recent call last):
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "<frozen runpy>", line 198, in _run_module_as_main
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "<frozen runpy>", line 88, in _run_code
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/workspaces/DEZoomcamp26/assets/ingestion/eia_fetch.py", line 208, in <module>
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     main()
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/workspaces/DEZoomcamp26/assets/ingestion/eia_fetch.py", line 185, in main
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     records = fetch_all_records(api_key=api_key, limit=args.limit)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/workspaces/DEZoomcamp26/assets/ingestion/eia_fetch.py", line 99, in fetch_all_records
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     payload = fetch_page(session, api_key=api_key, offset=offset, length=page_length)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/workspaces/DEZoomcamp26/assets/ingestion/eia_fetch.py", line 79, in fetch_page
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     response = session.get(BASE_URL, params=params, timeout=60)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/requests/sessions.py", line 602, in get
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     return self.request("GET", url, **kwargs)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/requests/sessions.py", line 589, in request
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     resp = self.send(prep, **send_kwargs)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/requests/sessions.py", line 703, in send
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     r = adapter.send(request, **kwargs)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>   File "/home/codespace/.cache/uv/archive-v0/K-1XpYvJ1ZCydiQlL0lDB/lib/python3.12/site-packages/requests/adapters.py", line 713, in send
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >>     raise ReadTimeout(e, request=request)
+[23:40:19] [ingestion.eia_crude_oil_to_gcs] >> requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.eia.gov', port=443): Read timed out. (read timeout=60)
+[23:40:19] Failed: ingestion.eia_crude_oil_to_gcs (1m45.831s)
+
+==================================================
+
+FAIL ingestion.eia_crude_oil_to_gcs 
+UPSTREAM FAILED mart.fct_crude_oil_production 
+UPSTREAM FAILED raw.load_crude_oil_raw 
+UPSTREAM FAILED staging.stg_crude_oil_production 
+
+
+bruin run completed with failures in 1m45.832s
+
+ ✗ Assets executed      1 failed / 3 skipped
+
+
+1 assets failed
+└── ingestion.eia_crude_oil_to_gcs
+    └── failed to execute Python script: exit status 1
+

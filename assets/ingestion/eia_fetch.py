@@ -24,6 +24,8 @@ from typing import Any
 
 import pandas as pd
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from dotenv import load_dotenv
 from google.cloud import storage
 
@@ -32,6 +34,8 @@ PAGE_SIZE = 5000
 DEFAULT_PRODUCT = "EPC0"
 DEFAULT_PROCESS = "FPF"
 DEFAULT_FREQUENCY = "monthly"
+START_DATE = "2024-01"
+END_DATE = "2025-12"
 
 
 def parse_args() -> argparse.Namespace:
@@ -71,12 +75,14 @@ def fetch_page(
         ("data[]", "value"),
         ("facets[product][]", DEFAULT_PRODUCT),
         ("facets[process][]", DEFAULT_PROCESS),
+        ("start", START_DATE),
+        ("end", END_DATE),
         ("sort[0][column]", "period"),
         ("sort[0][direction]", "desc"),
         ("offset", str(offset)),
         ("length", str(length)),
     ]
-    response = session.get(BASE_URL, params=params, timeout=60)
+    response = session.get(BASE_URL, params=params, timeout=120)
     response.raise_for_status()
     payload = response.json()
     if "response" not in payload:
@@ -86,6 +92,14 @@ def fetch_page(
 
 def fetch_all_records(api_key: str, limit: int | None = None) -> list[dict[str, Any]]:
     session = requests.Session()
+    retries = Retry(
+        total=5,
+        backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504],
+        raise_on_status=True
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    
     all_records: list[dict[str, Any]] = []
     offset = 0
     total_expected: int | None = None

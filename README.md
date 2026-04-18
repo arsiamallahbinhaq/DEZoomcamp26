@@ -1,166 +1,112 @@
-# Crude Oil Production Analytics Pipeline
-> Data Engineering Zoomcamp 2026 Capstone Project
+# U.S. Crude Oil Production Analytics Pipeline
+[![GCP](https://img.shields.io/badge/GCP-Cloud-blue?logo=google-cloud)](https://cloud.google.com/)
+[![Bruin](https://img.shields.io/badge/Orchestration-Bruin-orange)](https://getbruin.com/)
+[![Terraform](https://img.shields.io/badge/IaC-Terraform-purple?logo=terraform)](https://www.terraform.io/)
+[![BigQuery](https://img.shields.io/badge/Data_Warehouse-BigQuery-blue?logo=google-bigquery)](https://cloud.google.com/bigquery)
 
-This repository contains an end-to-end data engineering project that analyzes monthly U.S. crude oil production using GCP, Terraform, Bruin, BigQuery, and Looker Studio.
+This repository contains an end-to-end data engineering pipeline designed to analyze monthly U.S. crude oil production data. The project leverages modern data stack tools to transform raw API data into actionable business insights.
 
-Dokumen ini disediakan dalam dua bahasa:
-
-- [Bahasa Indonesia](#bahasa-indonesia)
-- [English](#english)
+## 📊 Interactive Dashboard
+You can access the live interactive report here:
+**[Looker Studio Dashboard - U.S. Crude Oil Production](https://datastudio.google.com/s/hRlK9DCmA5A)**
 
 ---
 
-## Bahasa Indonesia
+## 🎯 Project Overview
+The primary goal of this project is to build a robust, scalable pipeline that tracks crude oil production across different U.S. states using public data from the Energy Information Administration (EIA).
 
-### Ringkasan Proyek
+### Key Business Questions:
+- What is the monthly trend of U.S. crude oil production over time?
+- Which states are the top contributors to the national production?
+- How concentrated is the production within a few key states?
+- When did significant production spikes or drops occur?
 
-Project ini membangun pipeline data end-to-end untuk menganalisis produksi `crude oil` bulanan di Amerika Serikat dari data publik EIA.
+## 🏗️ Architecture
+The pipeline follows a modular architecture:
+1. **Ingestion**: Python script fetches data from EIA API v2.
+2. **Data Lake**: Raw data is stored in **Google Cloud Storage (GCS)** as Parquet files.
+3. **Warehouse (Medallion Architecture)**:
+   - **Raw Layer**: External tables pointing to GCS.
+   - **Staging Layer**: Data cleaning, type casting, and deduplication.
+   - **Mart Layer**: Final fact tables with growth metrics (MoM, YoY).
+4. **Orchestration**: **Bruin** manages the entire dependency graph.
+5. **Visualization**: **Looker Studio** for temporal and categorical analysis.
 
-Alur utamanya:
+## 🛠️ Tech Stack
+- **Cloud**: Google Cloud Platform (GCS, BigQuery)
+- **IaC**: Terraform
+- **Orchestration**: Bruin
+- **Languages**: Python (Ingestion), SQL (Transformations)
+- **Visualization**: Looker Studio
 
-1. Mengambil data crude oil dari EIA API
-2. Menyimpan data mentah ke Google Cloud Storage dalam format parquet
-3. Memuat data ke BigQuery raw layer
-4. Membersihkan dan menstandarkan data di staging layer
-5. Membuat tabel mart untuk dashboard
-6. Menampilkan insight di Looker Studio
-
-### Scope yang Disepakati
-
-Project ini sekarang difokuskan hanya pada `crude oil production`, bukan crude oil dan natural gas sekaligus.
-
-Fokus dashboard akhir:
-
-- 1 tile distribusi kategorikal
-- 1 tile distribusi temporal
-
-### Pertanyaan Bisnis Utama
-
-- Bagaimana tren produksi crude oil AS per bulan dari tahun ke tahun?
-- State mana yang konsisten menjadi produsen crude oil terbesar?
-- Apakah kontribusi produksi terkonsentrasi di beberapa state saja?
-- Kapan terjadi lonjakan atau penurunan produksi yang paling menonjol?
-
-### Dashboard Akhir
-
-Dashboard minimum akan berisi 2 tile utama:
-
-1. `Line chart`
-   Menampilkan tren produksi crude oil bulanan berdasarkan `period`
-
-2. `Bar chart`
-   Menampilkan distribusi produksi crude oil berdasarkan `state_name`
-
-Dengan desain ini, requirement penilaian tetap terpenuhi:
-
-- satu grafik kategorikal
-- satu grafik temporal
-
-### Arsitektur Singkat
-
-```text
-EIA API
-  -> Python ingestion
-  -> GCS raw parquet
-  -> BigQuery raw
-  -> BigQuery staging
-  -> BigQuery mart
-  -> Looker Studio dashboard
-```
-
-### Teknologi yang Digunakan
-
-- `GCP`
-- `Terraform`
-- `Bruin`
-- `BigQuery`
-- `Looker Studio`
-
-### Struktur Proyek yang Dituju
-
+## 📂 Project Structure
 ```text
 DEZoomcamp26/
-├── infra/
+├── infra/                # Terraform configuration files
 ├── assets/
-│   ├── ingestion/
-│   ├── raw/
-│   ├── staging/
-│   └── mart/
-├── .github/workflows/
-├── .bruin.yml
-├── .env.example
-├── requirements.txt
-├── README.md
-└── project-plan.md
+│   ├── ingestion/       # Python extraction scripts
+│   ├── raw/             # BigQuery raw layer definitions
+│   ├── staging/         # SQL cleaning and standardization
+│   └── mart/            # SQL final analytical models
+├── ai-analyst/          # Metadata for Bruin AI data analyst
+├── docs/                # Project documentation
+└── pipeline.yml         # Bruin pipeline definition
 ```
 
-### Status Saat Ini
+## 🚀 Getting Started
 
-Tahap sekarang:
+### Prerequisites
+- Google Cloud Project with Billing enabled
+- EIA API Key (Get one here)
+- Terraform and Bruin installed
 
-- scope project sudah dikunci
-- ingestion, raw, staging, dan mart layer sudah berhasil dibuat
-- pipeline sudah dibungkus sebagai asset Bruin
-- `bruin validate .` sudah berhasil
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/DEZoomcamp26.git
+   ```
+2. Setup Environment:
+   ```bash
+   cp .env.example .env
+   # Fill in your API keys and Project ID
+   ```
+3. Run Pipeline:
+   ```bash
+   bruin run .
+   ```
 
-### Menjalankan dengan Bruin
+---
 
-1. Copy konfigurasi Bruin:
+## 🇮🇩 Bahasa Indonesia
 
-```bash
-cp .bruin.yml.example .bruin.yml
-```
+### Ringkasan Proyek
+Proyek ini membangun pipeline data end-to-end untuk menganalisis produksi crude oil bulanan di Amerika Serikat menggunakan data publik dari EIA.
 
-2. Export environment variables:
+### Alur Kerja:
+1. **Ingestion**: Mengambil data dari EIA API v2.
+2. **Data Lake**: Menyimpan data mentah ke GCS dalam format Parquet.
+3. **Data Warehouse**: Memproses data di BigQuery melalui layer Raw, Staging, dan Mart.
+4. **Orchestration**: Menggunakan Bruin untuk mengatur jadwal dan ketergantungan antar aset.
+5. **Visualisasi**: Menyajikan data melalui dashboard interaktif di Looker Studio.
 
-```bash
-set -a
-source .env
-set +a
-export PATH=$HOME/.local/bin:$PATH
-export BRUIN_HOME=/tmp/.bruin
-```
+### Dashboard Utama:
+Dashboard kami dirancang untuk menjawab metrik kunci produksi:
+- **Tren Temporal**: Grafik garis yang menunjukkan tren produksi bulanan dari 2024-2025.
+- **Distribusi Kategorikal**: Grafik batang yang menunjukkan kontribusi produksi per negara bagian (State).
 
-3. Validasi pipeline:
+**Buka Report Looker Studio**
 
-```bash
-bruin validate .
-```
+### Cara Menjalankan:
+1. Pastikan Anda memiliki Service Account GCP dengan akses BigQuery dan GCS.
+2. Jalankan `bruin validate .` untuk memastikan semua koneksi benar.
+3. Jalankan `bruin run .` untuk mengeksekusi pipeline dari awal hingga akhir.
 
-4. Jalankan pipeline:
+### Catatan Bruin AI Analyst:
+Proyek ini mendukung fitur AI Analyst dari Bruin. Dokumentasi metadata dapat ditemukan di folder `ai-analyst/` yang memungkinkan analisis data menggunakan bahasa alami melalui Bruin CLI.
 
-```bash
-bruin run .
-```
+---
 
-Flow Bruin di project ini:
-
-- `ingestion.eia_crude_oil_to_gcs`
-- `raw.load_crude_oil_raw`
-- `staging.stg_crude_oil_production`
-- `mart.fct_crude_oil_production`
-
-Bruin membaca `depends` antar asset dan mengeksekusinya dalam urutan yang benar.
-
-### Bruin Competition Notes
-
-Untuk mendukung kriteria kompetisi Bruin:
-
-- ingestion dijalankan lewat asset Python Bruin
-- transformation dijalankan lewat asset SQL Bruin di BigQuery
-- orchestration dijalankan lewat `bruin run`
-- panduan `AI data analyst` disiapkan di [docs/bruin-ai-analyst.md](/workspaces/DEZoomcamp26/docs/bruin-ai-analyst.md:1)
-
-### Kriteria Nilai yang Ditargetkan
-
-Project ini dirancang untuk menunjukkan:
-
-- problem statement yang jelas
-- pipeline end-to-end
-- cloud storage dan data warehouse
-- orchestration
-- infrastructure as code
-- dashboard akhir yang relevan
+*Developed as a Capstone Project for Data Engineering Zoomcamp 2026.*
 
 ---
 
